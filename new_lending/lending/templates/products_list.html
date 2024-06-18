@@ -1,0 +1,18 @@
+{%extends 'home_page.html'%}
+{%load static%}
+
+{%block content%}
+{%for product in products%}
+<div class="card-group">
+    <div class="card">
+      <img src="" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{product.productModel}}</h5>
+        <p class="card-text">{{product.Descripton}}</p>
+        <h6 class="card-title">{{product.cost}}</h6>
+        <a href="{{product.get_absolute_url}}" class="btn btn-primary">Buy product</a>
+      </div>
+    </div>
+</div>
+{%endfor%}
+{%endblock%}
