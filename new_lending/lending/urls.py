@@ -3,7 +3,6 @@ from lending import views
 from django.contrib import admin
 
 urlpatterns = [
-    path('admin',admin.site.urls),
     path('home/',views.home_page, name= "home"),
     path('',views.redirecting, name="empty"),
     path('catalog/', views.catalog, name = "catalog"),
