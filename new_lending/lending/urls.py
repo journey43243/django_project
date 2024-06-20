@@ -7,8 +7,7 @@ urlpatterns = [
     path('',views.redirecting, name="empty"),
     path('catalog/', views.catalog, name = "catalog"),
     path('sale/',views.sale, name = 'sale'),
-    path('partners/',views.partners, name ='partners'), #views.partners,name ='partners'
+    path('partners/',views.partners, name ='partners'),
     path('partners/<slug:slugy>/', views.products_list,name = 'products_list'),
     path('product/<uuid:id>/',views.productPage, name = 'product_page')
-   # path('sale/<slug:id>/', views.products_list, name = 'products_list')
 ]

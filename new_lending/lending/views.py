@@ -35,5 +35,4 @@ def productPage(request,id):
     data = {
         'product' : Product.objects.get(pk = id)
     }
-    print(id,Product.objects.get(pk = id))
     return render(request,'productPage.html', context=data)

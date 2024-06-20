@@ -9,9 +9,9 @@ class inStockProduct(models.Manager):
         return super().get_queryset().filter(stock = 1)
 
 class Companys(models.Model):
-    nameOfCopmany = models.CharField(primary_key= True,max_length= 30)
-    Descripton = models.TextField(max_length=255)
-    Image = models.ImageField()
+    nameOfCopmany = models.CharField(primary_key= True,max_length= 30,verbose_name='Name')
+    Descripton = models.TextField(max_length=255, verbose_name= 'Description')
+    image = models.ImageField()
     slug = models.SlugField(blank= False, unique= True)
      
     def get_slug(self):
@@ -22,6 +22,10 @@ class Companys(models.Model):
 
     def get_absolute_url(self):
         return reverse('products_list', kwargs= {'slugy' : self.slug})
+    
+    class Meta:
+        verbose_name = "Companys"
+        verbose_name_plural = "Companys"
 
 class Product(models.Model):
 
@@ -31,15 +35,15 @@ class Product(models.Model):
         outStock = 0, 'Our stock'
 
 
-    productModel = models.CharField(max_length= 255)
+    productModel = models.CharField(max_length= 255,verbose_name="Product")
     descripton = models.TextField(max_length=255, default='any description')
     image = models.ImageField(blank= True)
     sizesAndTheirCount= models.CharField(max_length= 255, blank = True)
     id = models.UUIDField(unique= True,blank= False, default= uuid.uuid4,primary_key=True)
-    Maker = models.ForeignKey('Companys', on_delete= models.PROTECT,null=True,related_name= 'Product')
+    Maker = models.ForeignKey('Companys', on_delete= models.PROTECT,null=True,related_name='maker')
     stock = models.IntegerField(choices= Status.choices)
     cost = models.IntegerField(null= True)
-    tags = models.ManyToManyField('Tags', blank = True, related_name= 'tags')
+    tags = models.ManyToManyField('Tags', blank = True, related_name= 'tag')
 
     
     objects = models.Manager()
@@ -52,7 +56,6 @@ class Product(models.Model):
         return reverse('product_page', kwargs={'id' : self.id})
     
     class Meta:
-
         ordering = ['-cost']
         indexes = [
             models.Index(fields=['-cost'])

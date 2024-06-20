@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     'lending.apps.LendingConfig',
     'django_extensions',
+    'rangefilter'
 ]
 
 MIDDLEWARE = [
