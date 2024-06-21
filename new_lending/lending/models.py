@@ -14,8 +14,6 @@ class Companys(models.Model):
     image = models.ImageField()
     slug = models.SlugField(blank= False, unique= True)
      
-    def get_slug(self):
-        return slugify(self.nameOfCopmany,allow_unicode= True)
     
     def __str__(self) -> str:
         return self.nameOfCopmany
@@ -32,7 +30,7 @@ class Product(models.Model):
     class Status(models.IntegerChoices):
 
         inStock = 1, 'In stock'
-        outStock = 0, 'Our stock'
+        outStock = 0, 'Out stock'
 
 
     productModel = models.CharField(max_length= 255,verbose_name="Product")
