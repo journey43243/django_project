@@ -42,6 +42,7 @@ class Product(models.Model):
     stock = models.IntegerField(choices= Status.choices)
     cost = models.IntegerField(null= True)
     tags = models.ManyToManyField('Tags', blank = True, related_name= 'tag')
+    photo = models.ImageField(upload_to= 'photos/%Y/%m/%d', blank= True, null= True, verbose_name='photo')
 
     
     objects = models.Manager()
@@ -71,6 +72,9 @@ class Users(models.Model):
     mail = models.EmailField()
     adressToOrder = models.TextField(max_length=256,blank=True)
 
+    def __str__(self):
+        return self.mail
+
 
 class usersOrders(models.Model):
 
@@ -98,9 +102,15 @@ class Transactions(models.Model):
     amount = models.IntegerField(blank= False, null= True)
     receipt = models.ImageField(null= True)
 
+    def __str__(self):
+        return self.id
+
 class Tags(models.Model):
     name = models.CharField(max_length= 100)
     slug = models.SlugField()
+
+    def __str__(self):
+        return self.name
 
     def get_slug(self):
         return slugify(self.name, allow_unicode= True)

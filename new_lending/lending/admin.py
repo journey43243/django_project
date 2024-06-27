@@ -1,9 +1,11 @@
 from django.contrib import admin
 from .models import Companys,Product
+import uuid
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    fields = ('productModel','Maker','stock','cost','tags','id')
     list_display = ('productModel','Maker','stock','cost')
     list_display_links = ('productModel','Maker')
     list_editable = ('stock','cost')
@@ -11,6 +13,8 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('productModel',)
     list_filter = ('stock', 'Maker__nameOfCopmany')
     actions = ('set_stock', 'delete_stock')
+    filter_horizontal = ('tags', )
+
 
     @admin.action(description= "Add to stock")
     def set_stock(self, request,queryset):
@@ -30,3 +34,4 @@ class CompanyAdmin(admin.ModelAdmin):
     list_editable = ('Descripton', )
     search_fields = ('nameOfCopmany', )
 
+    
