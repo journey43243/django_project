@@ -1,38 +1,92 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render,HttpResponse,redirect,get_object_or_404
 from django.template.loader import render_to_string
-from lending.models import Companys,Product, Tags
+from lending.models import Companys, Product, Tags, Users
+from django.views.generic import ListView, TemplateView,DetailView, FormView
+from .forms import Authentication
+from django.urls import reverse, reverse_lazy
+from .utils import DataMixin
+
+tag_data = Tags.objects.all()
 
 
 
 
-def home_page(request):
-    text_data ={
-        'text': "Hello it's my first website, don't judge, please",
-        'tags' : Tags.objects.all()
-    }
-    return render(request,'home_page.html',text_data)
+
+
+# def home_page(request):
+#     data = {
+#         'tags' : tag_data
+#     }
+#     return render(request,'home_page.html',data)
+class Home(DataMixin, TemplateView):
+    template_name = 'home_page.html'
+    
+
 
 def redirecting(request):
     return redirect('home')
 
 def catalog(request):
-    return render(request,'catalog.html')
+    data = {
+        'tags' : tag_data
+    }
+    return render(request,'catalog.html',data)
 
 def sale(request):
-    return render(request, 'sale.html')
-
-def partners(request):
-    data = {'companys' : Companys.objects.all()}
-    return render(request,'partners.html',context = data)
-
-def products_list(request,slugy):
     data = {
-        'products' :  Product.product.filter(Maker = Companys.objects.get(slug = slugy).nameOfCopmany),
+        'tags' : tag_data
     }
-    return render(request,'products_list.html',context = data)
+    return render(request, 'sale.html',data)
 
-def productPage(request,id):
+
+class PartnersList(DataMixin, ListView):
+    model = Companys
+    template_name = 'partners.html'
+    context_object_name = 'companys'
+
+    
+
+
+class ProductList(DataMixin, ListView):
+    template_name = 'products_list.html'
+    context_object_name = 'products'
+
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return Product.product.filter(Maker = Companys.objects.get(slug = self.kwargs['slugy']))
+        
+        
+
+
+
+class ProductView(DataMixin, DetailView):
+
+    template_name = 'productPage.html'
+    model = Product
+
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context =  super().get_context_data(**kwargs)
+        context['product'] = Product.objects.get(pk = self.kwargs['pk'])
+        return context
+    
+   
+
+
+def authentication(request):
     data = {
-        'product' : Product.objects.get(pk = id)
+        'tags' : tag_data
     }
-    return render(request,'productPage.html', context=data)
+    return render(request, 'authentication.html',context=data)
+
+
+class Authentication(DataMixin, FormView):
+    model = Users
+    form_class = Authentication
+    template_name = 'authentication.html'
+    success_url = reverse_lazy('home')
+
+    
+

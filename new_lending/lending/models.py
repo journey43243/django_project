@@ -52,7 +52,7 @@ class Product(models.Model):
         return self.productModel
 
     def get_absolute_url(self):
-        return reverse('product_page', kwargs={'id' : self.id})
+        return reverse('product_page', kwargs={'pk' : self.id})
     
     class Meta:
         ordering = ['-cost']
