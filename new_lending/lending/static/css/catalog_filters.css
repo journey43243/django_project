@@ -1,0 +1,20 @@
+.filters{
+    display : inline-block;
+    text-align: center;
+}
+
+ul{
+    display: inline-block;
+}
+
+.dropdown{
+    display: inline-block;
+}
+
+.text_upper_filters{
+    text-align: center;
+}
+
+.text_under_filters{
+    text-align: center;
+}

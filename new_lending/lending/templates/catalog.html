@@ -1,9 +1,106 @@
-{%extends "home_page.html" %}
+{%extends "base.html" %}
 {%load static%}
 
 
-<body>
-{%block content%}
+{%block styles%}
 
-{%endblock}
-</body>
+<link rel="stylesheet" href="{%static 'css/product_card.css'%}">
+<link rel="stylesheet" href="{%static 'css/catalog_filters.css'%}">
+{%endblock%}
+{%block content%}
+<div class="text_upper_filters">
+    <h2>Filters</h2>
+</div>
+
+<div class="filters">
+    <form method="get">
+<!--    I'll use only used parameters-->
+        <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        Size
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <li><span class = "dropdown-item">25 <input type="checkbox" name="size" value="25"></span></li>
+          <li><span class = "dropdown-item">29 <input type="checkbox" name="size" value="29"></span></li>
+          <li><span class = "dropdown-item">34 <input type="checkbox" name="size" value="34"></span></li>
+          <li><span class = "dropdown-item">39 <input type="checkbox" name="size" value="39"></span></li>
+          <li><span class = "dropdown-item">44 <input type="checkbox" name="size" value="44"></span></li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        Kind
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><span class = "dropdown-item">Pants <input type="checkbox" name="kind" value="pants"></span></li>
+        <li><span class = "dropdown-item">Trainers <input type="checkbox" name="kind" value="trainers"></span></li>
+        <li><span class = "dropdown-item">Jacket <input type="checkbox" name="kind" value="jacket"></span></li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        Creator
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><span class = "dropdown-item">Adidas <input type="checkbox" name="creator" value="adidas"></span></li>
+        <li><span class = "dropdown-item">ROLEX <input type="checkbox" name="creator" value="rolex"></span></li>
+        <li><span class = "dropdown-item">Nike <input type="checkbox" name="creator" value="nike"></span></li>
+        <li><span class = "dropdown-item">The North Face <input type="checkbox" name="creator" value="the_north_face"></span></li>
+        <li><span class = "dropdown-item">Lacoste <input type="checkbox" name="creator" value="lacoste"></span></li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        Sex
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><span class = "dropdown-item">Man <input type="checkbox" name="sex" value="man"></span></li>
+        <li><span class = "dropdown-item">Women <input type="checkbox" name="sex" value="women"></span></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+      </ul>
+    <div class="btn">
+        <button type="submit"> Filter</button>
+    </div>
+    </form>
+    </div>
+<div class="text_under_filters">
+    <h2>
+        Goods
+    </h2>
+</div>
+<div class="card-group">
+    {%for product in products%}
+    <div class="card">
+        <form action="{%url 'cart:cart_add' product.id%}" method="post">
+        {%csrf_token%}
+        <img src="{{product.photo.url}}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{product.productModel}}</h5>
+            <p class="card-text">{{product.Descripton}}</p>
+            <h6 class="card-title">{{product.cost}}</h6>
+            {{ cart_product_form.as_p}}
+          <button class="btn btn-primary" type="submit">Add to cart</button>
+        </form>
+        <a href="{% url 'lending:product_page' product.id%}" type="button">View more</a>
+      </div>
+    </div>
+    {%endfor%}
+</div>
+
+
+
+
+{%endblock%}
+
+{%block pagination%}
+    <ul class="pagination">
+    {%for page in paginator.page_range%}
+    {%if paginator.page_number == page%}
+        <li><a class="active" href="?page={{page}}">{{page}}</a></li>
+    {%else%}
+        <li><a href="?page={{page}}">{{page}}</a></li>
+    {%endif%}
+    {%endfor%}
+  </ul>
+    {%endblock%}
+

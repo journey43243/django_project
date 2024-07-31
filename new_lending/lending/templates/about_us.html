@@ -1,0 +1,36 @@
+{%extends 'base.html'%}
+{%load static%}
+
+<body>
+
+{%block content%}
+<div class="my_text">
+    <h1> Why our?</h1>
+    <h2>Because these companies choose our </h2>
+</div>
+<div class="card-group">
+    {%for company in companys%}
+    <div class="card">
+        <img src="{{company.image.url}}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{company.nameOfCopmany}}</h5>
+            <p class="card-text">{{company.Descripton}}</p>
+            <a href="{{company.get_absolute_url}} " class="btn btn-primary">To see products</a>
+      </div>
+    </div>
+    {%endfor%}
+</div>
+{%endblock%}
+{%block pagination%}
+    <ul class="pagination">
+    {%for page in paginator.page_range%}
+    {%if paginator.page_number == page%}
+        <li><a class="active" href="?page={{page}}">{{page}}</a></li>
+    {%else%}
+        <li><a href="?page={{page}}">{{page}}</a></li>
+    {%endif%}
+    {%endfor%}
+  </ul>
+    {%endblock%}
+</body>
+</html>

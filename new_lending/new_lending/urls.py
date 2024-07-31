@@ -23,8 +23,10 @@ from new_lending import settings
 
 urlpatterns = [
     path('admin', admin.site.urls),
-    path('',include('lending.urls')),
+    path('',include('lending.urls', namespace='lending')),
     path("__debug__/", include("debug_toolbar.urls")),
+    path('authentication/',include('authentication.urls',namespace= 'authentication')),
+    path('',include('cart.urls', namespace='cart')),
 ]
 
 if settings.DEBUG:

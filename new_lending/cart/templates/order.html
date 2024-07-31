@@ -1,0 +1,48 @@
+{%extends 'base.html'%}
+{%load static%}
+{%load filters%}
+  <header id="site-header">
+    <div class="container">
+      <h1>Shopping cart <span>[</span> <em><a href="https://codepen.io/tag/rodeo-007" target="_blank">CodePen Challange</a></em> <span class="last-span is-open">]</span></h1>
+    </div>
+  </header>
+{%block styles%}
+<link rel="stylesheet" href="{%static 'css/cart.css'%}">
+{%endblock%}
+{%block content%}
+  <div class="container mt-5 mb-5">
+            <div class="d-flex justify-content-center row">
+                <div class="col-md-8">
+                    <div class="p-2">
+                        <h4>Your order</h4>
+
+                    </div>
+                  {%with 0 as sum%}
+                  {%for product in order_positions%}
+                    <div class="d-flex flex-row justify-content-between align-items-center p-2 bg-white mt-4 px-3 rounded">
+                        <div class="mr-1"><img class="rounded" src="{{product.photo.url}}" width="70"></div>
+                        <div class="d-flex flex-column align-items-center product-details"><span class="font-weight-bold">{{product.size}}</span></div>
+                        <div class="d-flex flex-column align-items-center product-details"><span class="font-weight-bold">{{product}}</span>
+                        </div>
+                        {%with product.id as product_id%}
+                        <div class="d-flex flex-row align-items-center qty">Quantity : {{order_quantities|get_value_from_dict:product.id}}
+                            <h5 class="text-grey mt-1 mr-1 ml-1"></h5></div>
+                        {%endwith%}
+                        <div class="d-flex flex-column align-items-center product-details"><span class="font-weight-bold">{{product.cost}}</span>
+                            <div class="d-flex flex-row product-desc">
+                                <div class="color"><span class="font-weight-bold">Price for one</span></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center"></div>
+                    </div>
+                  {%endfor%}
+                  {%endwith%}
+                    </div>
+                <input type="hidden" value="a">
+                <div class="d-flex flex-row justify-content-between align-items-center p-2 bg-white mt-4 px-3 rounded">Total Price: {{total_price}}</div>
+                </div>
+            </div>
+        </div>
+
+{%endblock%}

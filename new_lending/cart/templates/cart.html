@@ -1,0 +1,54 @@
+{%extends 'base.html'%}
+{%load static%}
+
+  <header id="site-header">
+    <div class="container">
+      <h1>Shopping cart <span>[</span> <em><a href="https://codepen.io/tag/rodeo-007" target="_blank">CodePen Challange</a></em> <span class="last-span is-open">]</span></h1>
+    </div>
+  </header>
+{%block styles%}
+<link rel="stylesheet" href="{%static 'css/cart.css'%}">
+{%endblock%}
+{%block content%}
+<form action="{% url 'cart:order_information' %}" method="post">
+  <div class="container mt-5 mb-5">
+            <div class="d-flex justify-content-center row">
+                <div class="col-md-8">
+                    <div class="p-2">
+                        <h4>Shopping cart</h4>
+
+                    </div>
+
+                    {%csrf_token%}
+                  {%for _, product in cart.items%}
+                    <div class="d-flex flex-row justify-content-between align-items-center p-2 bg-white mt-4 px-3 rounded">
+                        <div class="mr-1"><img class="rounded" src="{{product.image}}" width="70"></div>
+                        <div class="d-flex flex-column align-items-center product-details"><span class="font-weight-bold">{{product.size}}</span></div>
+                        <div class="d-flex flex-column align-items-center product-details"><span class="font-weight-bold">{{product.name}}</span>
+
+                        </div>
+                        <div class="d-flex flex-row align-items-center qty">Quantity : {{product.quantity}}</i>
+                            <h5 class="text-grey mt-1 mr-1 ml-1"></h5></div>
+                        <div class="d-flex flex-column align-items-center product-details"><span class="font-weight-bold">{{product.cost}}</span>
+                            <div class="d-flex flex-row product-desc">
+                                <div class="color"><span class="font-weight-bold">Price for one</span></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="text-grey">{{product.total_cost}}</h5>
+                        </div>
+
+                    </div>
+                  {%endfor%}
+                    </div>
+                <input type="hidden" value="a">
+                <div class="d-flex flex-row justify-content-between align-items-center p-2 bg-white mt-4 px-3 rounded">Total Price: {{total_cost}}</div>
+<!--                    <div class="d-flex flex-row align-items-center mt-3 p-2 bg-white rounded"><input type="text" class="form-control border-0 gift-card" placeholder="discount code/gift card"><button class="btn btn-outline-warning btn-sm ml-2" type="button">Apply</button></div>-->
+                    <div class="d-flex flex-row align-items-center mt-3 p-2 bg-white rounded">
+                        <button class="btn btn-warning btn-block btn-lg ml-2 pay-button" type="submit">Proceed to Pay</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>
+{%endblock%}

@@ -1,0 +1,13 @@
+{%extends 'base.html'%}
+{%load static%}
+{%block styles%}
+<link rel="stylesheet" href="{%static 'css/order_information_styles.css'%}">
+{%endblock%}
+{%block content%}
+
+<form action="{%url 'cart:order_done' %}" method="post">
+    {%csrf_token %}
+    {{form}}
+    <button type="submit" class="order"></button>
+</form>
+{%endblock%}

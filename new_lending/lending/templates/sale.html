@@ -1,9 +1,32 @@
-{%extends "home_page.html"%}
+{%extends "base.html"%}
 {%load static%}
 
-<body>
 
+{%block styles%}
+
+<link rel="stylesheet" href="{%static 'css/product_card.css'%}">
+<link rel="stylesheet" href="{%static 'css/catalog_filters.css'%}">
+{%endblock%}
 {%block content%}
-<title>Sale</title>
+
+
+<div class="card-group">
+    {%for product in products%}
+    <div class="card">
+        <form action="{%url 'cart:cart_add' product.id%}" method="post">
+        {%csrf_token%}
+        <img src="{{product.photo.url}}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{product.productModel}}</h5>
+            <p class="card-text">{{product.Descripton}}</p>
+            <h6 class="card-title">{{product.cost}}</h6>
+            {{ cart_product_form.as_p}}
+          <button class="btn btn-primary" type="submit">Add to cart</button>
+        </form>
+        <a href="{% url 'lending:product_page' product.id%}" type="button">View more</a>
+      </div>
+    </div>
+{%endfor%}
+</div>
 {%endblock%}
 </body>

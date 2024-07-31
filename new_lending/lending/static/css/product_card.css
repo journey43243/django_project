@@ -1,0 +1,13 @@
+.card-img-top{
+    height: 400px;
+    width: 400px;
+}
+
+.card{
+    display: inline-block;
+    width : 450px;
+    height: 600px;
+    margin: 5px;
+
+}
+

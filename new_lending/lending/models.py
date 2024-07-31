@@ -1,7 +1,14 @@
+from functools import partial
+from django import utils
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 import uuid
+import json
+
+from new_lending import settings
 
 
 class inStockProduct(models.Manager):
@@ -19,7 +26,7 @@ class Companys(models.Model):
         return self.nameOfCopmany
 
     def get_absolute_url(self):
-        return reverse('products_list', kwargs= {'slugy' : self.slug})
+        return reverse('lending:products_list', kwargs= {'slugy' : self.slug})
     
     class Meta:
         verbose_name = "Companys"
@@ -35,16 +42,14 @@ class Product(models.Model):
 
     productModel = models.CharField(max_length= 255,verbose_name="Product")
     descripton = models.TextField(max_length=255, default='any description')
-    image = models.ImageField(blank= True)
-    sizesAndTheirCount= models.CharField(max_length= 255, blank = True)
     id = models.UUIDField(unique= True,blank= False, default= uuid.uuid4,primary_key=True)
     Maker = models.ForeignKey('Companys', on_delete= models.PROTECT,null=True,related_name='maker')
     stock = models.IntegerField(choices= Status.choices)
-    cost = models.IntegerField(null= True)
+    cost = models.IntegerField(null= False)
     tags = models.ManyToManyField('Tags', blank = True, related_name= 'tag')
     photo = models.ImageField(upload_to= 'photos/%Y/%m/%d', blank= True, null= True, verbose_name='photo')
 
-    
+
     objects = models.Manager()
     product = inStockProduct()
 
@@ -52,8 +57,8 @@ class Product(models.Model):
         return self.productModel
 
     def get_absolute_url(self):
-        return reverse('product_page', kwargs={'pk' : self.id})
-    
+        return reverse('lending:product_page', kwargs={'pk' : self.id})
+
     class Meta:
         ordering = ['-cost']
         indexes = [
@@ -61,19 +66,6 @@ class Product(models.Model):
         ]
 
 
-class Users(models.Model):
-
-    name = models.CharField(max_length=32,blank=True)
-    surname = models.CharField(max_length=32,blank=True)
-    login = models.CharField(max_length=18)
-    password = models.CharField(max_length=32)
-    phoneNumber = models.CharField(max_length=12)
-    country = models.CharField(max_length=32)
-    mail = models.EmailField()
-    adressToOrder = models.TextField(max_length=256,blank=True)
-
-    def __str__(self):
-        return self.mail
 
 
 class usersOrders(models.Model):
@@ -84,26 +76,21 @@ class usersOrders(models.Model):
         orderSended = 2, 'Sended'
         orderDelivered = 3, 'Delivered'
 
-    orderPositions = models.JSONField(blank=False)
-    userLogin = models.ForeignKey('Users', on_delete= models.PROTECT)
-    status = models.IntegerField(blank= False, null= True, choices= orderStatus.choices)
-    receipt = models.OneToOneField('Transactions',blank= False, null= True, on_delete= models.PROTECT,related_name='userOrders')
+    orderPositions = models.ManyToManyField('Product', blank=False, related_name='products', null= True)
+    userLogin = models.ForeignKey('User', on_delete= models.PROTECT)
+    order_name = models.CharField(max_length=64, blank= False, verbose_name='Name')
+    order_surname = models.CharField(max_length=64, blank= False)
+    order_second_name = models.CharField(max_length=64, blank= False)
+    order_phone = models.CharField(max_length=64, blank= False)
+    order_place = models.CharField(max_length=64, blank=False)
+    status = models.IntegerField(blank= False, choices= orderStatus.choices)
+    receipt = models.ImageField(blank= False)
+    cart_url = models.CharField(blank= False)
+    id = models.UUIDField(primary_key=True, blank=False,default=uuid.uuid4, unique=True)
+    quantities = models.CharField(null= False, blank= False)
     
 
 
-class Transactions(models.Model):
-
-    class transactionStatus(models.IntegerChoices):
-        transactionsRejected = 0, 'Rejected'
-        transactionAccepted = 1, 'Accepted'
-
-    user = models.OneToOneField('Users', blank= False, null = True, on_delete= models.PROTECT, related_name= 'Transactions')
-    id = models.UUIDField(blank= False, primary_key= True,unique= True, default= uuid.uuid4)
-    amount = models.IntegerField(blank= False, null= True)
-    receipt = models.ImageField(null= True)
-
-    def __str__(self):
-        return self.id
 
 class Tags(models.Model):
     name = models.CharField(max_length= 100)
@@ -114,8 +101,26 @@ class Tags(models.Model):
 
     def get_slug(self):
         return slugify(self.name, allow_unicode= True)
-    
+
     def get_absolute_url(self):
-        return reverse('catalog', kwargs= {'tag' : self.slug})
+        return reverse('lending:catalog', kwargs= {'tag' : self.slug})
 
 
+class Sizes(models.Model):
+    id = models.IntegerField(primary_key= True)
+    name = models.CharField(max_length=2)
+    products = models.ManyToManyField('Product', related_name='sizes')
+
+
+
+
+class User(AbstractUser):
+
+
+    def get_password_reset_url(self):
+        base64_encoded_id = utils.http.urlsafe_base64_encode(utils.encoding.force_bytes(self.id))
+        token = PasswordResetTokenGenerator().make_token(self)
+        reset_url_args = {'uidb64': base64_encoded_id, 'token': token}
+        reset_path = reverse('authentication:password_reset_confirm', kwargs=reset_url_args)
+        reset_url = f'{settings.BASE_URL}{reset_path}'
+        return reset_url

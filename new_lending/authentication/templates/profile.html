@@ -1,0 +1,14 @@
+{%extends 'base.html'%}
+{%load static%}
+{%block content%}
+<h1>Your orders</h1>
+{%for order in orders%}
+<div class="order">
+    <span>id: {{order.id}},</span>
+    <span>name: {{order.order_name}},</span>
+    <span>phone: {{order.order_phone}},</span>
+    <span>second_name: {{order.order_second_name}},</span>
+    <span>place: {{order.order_place}},</span>
+</div>
+{%endfor%}
+{%endblock%}
